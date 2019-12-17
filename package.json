@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Dotenv injector",
   "main": "index.js",
+  "types": "index.d.ts",
   "keywords": [
     "webpack",
     "dotenv",
