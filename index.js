@@ -25,6 +25,7 @@ function parseEvironments(environments) {
 class DotenvWebpackPlugin {
   static options = {
     path: '.env',
+    property: 'env',
   }
 
   constructor(options = {}) {
@@ -49,7 +50,7 @@ class DotenvWebpackPlugin {
       `const environments = {${properties.join(',')}}`,
       parseValue.toString(),
       parseEvironments.toString(),
-      `window.env = parseEvironments(environments)`,
+      `window.${this.property} = parseEvironments(environments)`,
     ]
     const {error, code} = terser.minify(`!function() {${snippets.join(';')}}()`)
 
