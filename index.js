@@ -26,6 +26,7 @@ class DotenvWebpackPlugin {
   static options = {
     path: '.env',
     property: 'env',
+    template: false,
   }
 
   constructor(options = {}) {
@@ -45,7 +46,7 @@ class DotenvWebpackPlugin {
   }
 
   getContent(environments) {
-    const properties = Object.entries(environments).map(([key, value]) => `${key}: "${value}"`)
+    const properties = Object.entries(environments).map(([key, value]) => `${key}: "${this.template ? `$${key}` : value}"`)
     const snippets = [
       `const environments = {${properties.join(',')}}`,
       parseValue.toString(),
