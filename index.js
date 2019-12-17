@@ -23,8 +23,16 @@ function parseEvironments(environments) {
 }
 
 class DotenvWebpackPlugin {
+  static options = {
+    path: '.env',
+  }
+
+  constructor(options = {}) {
+    Object.assign(this, {...DotenvWebpackPlugin.options, ...options})
+  }
+
   getTag() {
-    const {error, parsed} = dotenv.config()
+    const {error, parsed} = dotenv.config({path: this.path})
 
     if (error) throw (error)
 
