@@ -2,19 +2,14 @@ import { Plugin } from 'webpack'
 
 interface DotenvWebpackPluginOptions {
   /**
-   * Dotenv file path, based on current working directory.
+   * Dotenv configuration.
    */
-  path: string
+  dotenv: string
 
   /**
    * Property name on global of environment object.
    */
   property: string
-
-  /**
-   * Insert variable template or value.
-   */
-  template: boolean
 }
 
 declare class DotenvWebpackPlugin extends Plugin {

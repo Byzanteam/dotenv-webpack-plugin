@@ -23,29 +23,25 @@ function parseEvironments(environments) {
 }
 
 class DotenvWebpackPlugin {
-  static options = {
-    path: '.env',
-    property: 'env',
-    template: false,
-  }
-
-  constructor(options = {}) {
-    Object.assign(this, {...DotenvWebpackPlugin.options, ...options})
+  constructor({ dotenv, property = 'env'} = {}) {
+    this.dotenv = dotenv
+    this.property = property
+    this.template = false
   }
 
   getTag() {
-    const {error, parsed} = dotenv.config({path: this.path})
+    const {error, parsed} = dotenv.config(this.dotenv)
 
-    if (error) throw (error)
+    if (error) throw error
 
     return {
       tagName: 'script',
       closeTag: true,
-      innerHTML: this.getContent(parsed),
+      innerHTML: this.getScript(parsed),
     }
   }
 
-  getContent(environments) {
+  getScript(environments) {
     const properties = Object.entries(environments).map(([key, value]) => `${key}: "${this.template ? `$${key}` : value}"`)
     const snippets = [
       `const environments = {${properties.join(',')}}`,
@@ -61,9 +57,22 @@ class DotenvWebpackPlugin {
   }
 
   apply(compiler) {
+    this.template = compiler.options.mode === 'production' ? true : false
+
     compiler.hooks.compilation.tap('DotenvWebpackPlugin', compilation => {
-      compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync('DotenvWebpackPlugin', (data, callback) => {
-        data.head = [...data.head, this.getTag()]
+      const HTMLWebpackPlugin = compiler.options.plugins
+        .map(({ constructor }) => constructor)
+        .find(plugin => plugin.name === 'HtmlWebpackPlugin')
+      const alterAssetTags = HTMLWebpackPlugin.getHooks
+        ? HTMLWebpackPlugin.getHooks(compilation).alterAssetTagGroups
+        : compilation.hooks.htmlWebpackPluginAlterAssetTags
+
+      alterAssetTags.tapAsync('DotenvWebpackPlugin', (data, callback) => {
+        if (HTMLWebpackPlugin.getHooks) {
+          data.headTags = [...data.headTags, this.getTag()]
+        } else {
+          data.head = [...data.head, this.getTag()]
+        }
 
         callback(null, data)
       })
