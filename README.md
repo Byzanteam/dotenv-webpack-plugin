@@ -5,20 +5,20 @@
 ## Installation
 
 ```bash
-$ npm install -D webpack-plugin-dotenv
+$ npm install -D dotenv-webpack-plugin
 ```
 
 ## Configuration
 
 ```js
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const WebpackPluginDotenv = require('webpack-plugin-dotenv')
+const DotenvWebpackPlugin = require('dotenv-webpack-plugin')
 
 module.exports = {
   ...
   plugins: [
     new HtmlWebpackPlugin(),
-    new WebpackPluginDotenv(),
+    new DotenvWebpackPlugin(),
   ],
   ...
 }
@@ -28,6 +28,5 @@ module.exports = {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| path | string | `'.env'` | Dotenv file path |
+| dotenv | object | undefined | Dotenv configuration options |
 | property | string | `'env'` | Property name of environment object on window |
-| template | boolean | `false` | Inject variable templates or values |
