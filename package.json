@@ -1,6 +1,6 @@
 {
   "name": "dotenv-webpack-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Dotenv injector",
   "main": "index.js",
   "types": "index.d.ts",
