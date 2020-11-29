@@ -5,8 +5,10 @@ function parseValue(value) {
   switch (true) {
     case value === '':
       return void 0
-    case value === 'true' || value === 'false':
-      return Boolean(value)
+    case value === 'true':
+      return true
+    case value === 'false':
+      return false
     case Number.isNaN(+value):
       return value
     default:
@@ -29,7 +31,7 @@ class DotenvWebpackPlugin {
     this.template = false
   }
 
-  getTag() {
+  async getTag() {
     const {error, parsed} = dotenv.config(this.dotenv)
 
     if (error) throw error
@@ -37,11 +39,11 @@ class DotenvWebpackPlugin {
     return {
       tagName: 'script',
       closeTag: true,
-      innerHTML: this.getScript(parsed),
+      innerHTML: await this.getScript(parsed),
     }
   }
 
-  getScript(environments) {
+  async getScript(environments) {
     const properties = Object.entries(environments).map(([key, value]) => `${key}: "${this.template ? `$${key}` : value}"`)
     const snippets = [
       `const environments = {${properties.join(',')}}`,
@@ -49,7 +51,7 @@ class DotenvWebpackPlugin {
       parseEvironments.toString(),
       `window.${this.property} = parseEvironments(environments)`,
     ]
-    const {error, code} = terser.minify(`!function() {${snippets.join(';')}}()`)
+    const {error, code} = await terser.minify(`!function() {${snippets.join(';')}}()`)
 
     if (error) throw (error)
 
@@ -67,11 +69,13 @@ class DotenvWebpackPlugin {
         ? HTMLWebpackPlugin.getHooks(compilation).alterAssetTagGroups
         : compilation.hooks.htmlWebpackPluginAlterAssetTags
 
-      alterAssetTags.tapAsync('DotenvWebpackPlugin', (data, callback) => {
+      alterAssetTags.tapAsync('DotenvWebpackPlugin', async (data, callback) => {
+        const tag = await this.getTag()
+
         if (HTMLWebpackPlugin.getHooks) {
-          data.headTags = [...data.headTags, this.getTag()]
+          data.headTags = [...data.headTags, tag]
         } else {
-          data.head = [...data.head, this.getTag()]
+          data.head = [...data.head, tag]
         }
 
         callback(null, data)
