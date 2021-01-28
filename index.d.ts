@@ -1,4 +1,4 @@
-import { Plugin } from 'webpack'
+import { Compiler } from 'webpack'
 
 interface DotenvWebpackPluginOptions {
   /**
@@ -12,8 +12,10 @@ interface DotenvWebpackPluginOptions {
   property: string
 }
 
-declare class DotenvWebpackPlugin extends Plugin {
+declare class DotenvWebpackPlugin {
   constructor(options?: Partial<DotenvWebpackPluginOptions>)
+
+  apply(compiler: Compiler): void
 }
 
 export default DotenvWebpackPlugin
