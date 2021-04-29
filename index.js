@@ -44,7 +44,8 @@ class DotenvWebpackPlugin {
   }
 
   async getScript(environments) {
-    const properties = Object.entries(environments).map(([key, value]) => `${key}: "${this.template ? `$${key}` : value}"`)
+    const properties = Object.entries(environments)
+      .map(([key, value]) => `${key}: "${this.template ? `$${key}` : value}"`)
     const snippets = [
       `const environments = {${properties.join(',')}}`,
       parseValue.toString(),

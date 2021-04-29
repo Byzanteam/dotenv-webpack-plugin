@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - directory: /
+    open-pull-requests-limit: 1
+    package-ecosystem: npm
+    rebase-strategy: auto
+    schedule:
+      interval: daily
+      time: 07:00
+      timezone: Asia/Shanghai
+    versioning-strategy: increase
+    assignees:
+      - fahchen
+      - moonRider
+      - vanppo
