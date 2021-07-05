@@ -1,15 +1,18 @@
 version: 2
 updates:
   - directory: /
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
     open-pull-requests-limit: 1
     package-ecosystem: npm
     rebase-strategy: auto
+    reviewers:
+      - fahchen
+      - moonRider
+      - vanppo
     schedule:
       interval: daily
       time: "07:00"
       timezone: Asia/Shanghai
     versioning-strategy: widen
-    assignees:
-      - fahchen
-      - moonRider
-      - vanppo
